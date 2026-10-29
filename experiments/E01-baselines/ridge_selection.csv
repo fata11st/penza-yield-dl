@@ -1,0 +1,6 @@
+crop,config,tune_mape,n_configs
+p_grain_crops,ar_climate_ndvi|a=1.0|d=1.0,19.182323480551773,36
+p_sugar_beet,ar_climate_ndvi|a=0.1|d=1.0,9.607552020768788,36
+p_sunflower,ar_climate_ndvi|a=0.1|d=1.0,26.08527159068267,36
+p_potato,ar|a=0.1|d=1.0,14.366240846215206,36
+p_vegetables,ar_climate|a=1.0|d=1.0,13.374469397544681,36

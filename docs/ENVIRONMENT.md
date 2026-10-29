@@ -72,6 +72,23 @@ printf "Host github-penza\n  HostName github.com\n  User git\n  IdentityFile ~/.
 ```
 Отпечаток GitHub (ED25519): `SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU`.
 
+## Ключи моделей
+
+TabPFN (E06): учётная запись Prior Labs, принятая лицензия модели, ключ API. Ключ хранится вне git:
+```bash
+mkdir -p ~/.config/penza-yield && chmod 700 ~/.config/penza-yield
+read -rs -p "TABPFN_TOKEN: " T && printf 'TABPFN_TOKEN=%s\n' "$T" > ~/.config/penza-yield/env && chmod 600 ~/.config/penza-yield/env && unset T
+```
+`scripts/run_all.sh` подхватывает этот файл. Chronos-2 (E07) ключа не требует.
+
+## Ночной запуск
+
+```bash
+python scripts/preflight.py      # при себе: скачивает веса, пробные прогнозы
+tmux new -s night
+bash scripts/run_all.sh          # E03–E07 и сводка; журналы — experiments/logs/
+```
+
 ## Соседи
 
 - `wsl --shutdown` — **запрещено**: остановит сервер toraX.

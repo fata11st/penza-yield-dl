@@ -1,4 +1,4 @@
-"""Многозадачная рекуррентная модель для внутрисезонного прогноза урожайности (E02).
+"""Многозадачные модели сезона для внутрисезонного прогноза урожайности: GRU (E02, E03) и 1D-CNN (E04).
 
 Вход за год t:
   * помесячные ряды 16 переменных за месяцы 1..cutoff года t (аномалии относительно окна обучения)
@@ -62,9 +62,35 @@ class GRUConfig:
     dropout: float = 0.2
     lr: float = 1e-2
     noise: float = 0.1        # гауссов шум на входной последовательности при обучении (аугментация)
+    arch: str = "gru"         # "gru" | "cnn"
+    variables: tuple[str, ...] | None = None  # подмножество помесячных переменных; None — все (E02)
 
     def key(self) -> str:
-        return f"h={self.hidden}|wd={self.weight_decay}|ep={self.epochs}"
+        k = f"h={self.hidden}|wd={self.weight_decay}|ep={self.epochs}"
+        if self.arch != "gru":
+            k += f"|arch={self.arch}"
+        if self.variables is not None:
+            k += f"|vars={len(self.variables)}"
+        return k
+
+
+# Компактный агрономический вход E03/E04 (D10): тепло, влага (осадки и почва), состояние посевов
+COMPACT_VARIABLES = ("mean_temp", "rf_sum", "swc_7_28cm", "ndvi")
+
+
+class SeasonCNN(nn.Module):
+    """Свёртка по месяцам (окно 3) → ReLU → среднее и последний месяц → голова со статическими признаками."""
+
+    def __init__(self, n_in: int, n_static: int, n_out: int, cfg: GRUConfig):
+        super().__init__()
+        self.conv = nn.Conv1d(n_in, cfg.hidden, kernel_size=3, padding=1)
+        self.drop = nn.Dropout(cfg.dropout)
+        self.head = nn.Linear(2 * cfg.hidden + n_static, n_out)
+
+    def forward(self, seq, static):
+        h = torch.relu(self.conv(seq.transpose(1, 2)))          # [batch, hidden, months]
+        pooled = torch.cat([h.mean(dim=2), h[:, :, -1]], dim=1)
+        return self.head(self.drop(torch.cat([pooled, static], dim=1)))
 
 
 class SeasonGRU(nn.Module):
@@ -79,10 +105,13 @@ class SeasonGRU(nn.Module):
         return self.head(self.drop(torch.cat([h[-1], static], dim=1)))
 
 
-def _prepare(ds: SeqDataset, train_idx: np.ndarray, idx: np.ndarray, cutoff: int):
+def _prepare(ds: SeqDataset, train_idx: np.ndarray, idx: np.ndarray, cutoff: int,
+             variables: tuple[str, ...] | None = None):
     """Тензоры для строк idx; статистики нормализации — только по train_idx. Месяцы > cutoff отрезаются."""
-    v = ds.seq[:, :cutoff, :]
-    m = ds.seq_mask[:, :cutoff, :]
+    names = list(variables) if variables is not None else ds.variables
+    cols = [ds.variables.index(n) for n in names]
+    v = ds.seq[:, :cutoff, :][:, :, cols]
+    m = ds.seq_mask[:, :cutoff, :][:, :, cols]
     tr = np.where(m[train_idx], v[train_idx], np.nan)
     with warnings.catch_warnings():  # месяцы без NDVI в окне обучения дают пустые срезы
         warnings.simplefilter("ignore", RuntimeWarning)
@@ -90,8 +119,9 @@ def _prepare(ds: SeqDataset, train_idx: np.ndarray, idx: np.ndarray, cutoff: int
         sd = np.nanstd(tr, axis=0)
     mu, sd = np.nan_to_num(mu), np.where(np.isnan(sd) | (sd < 1e-8), 1.0, sd)
     z = np.where(m[idx], (v[idx] - mu) / sd, 0.0)       # аномалии; пропуск → 0 (норма)
-    ndvi_flag = m[idx][:, :, [ds.variables.index(NDVI)]].astype(float)
-    seq = np.concatenate([z, ndvi_flag], axis=2)
+    if NDVI in names:  # канал наличия NDVI: модель отличает «нет данных» от «норма»
+        z = np.concatenate([z, m[idx][:, :, [names.index(NDVI)]].astype(float)], axis=2)
+    seq = z
 
     s_tr = ds.lag_ratios[train_idx]
     s_mu, s_sd = s_tr.mean(0), s_tr.std(0) + 1e-8
@@ -107,15 +137,16 @@ def fit_predict(ds: SeqDataset, train_idx, test_idx, cutoff: int, cfg: GRUConfig
     test_idx = np.asarray(test_idx)
     if ds.years[train_idx].max() >= ds.years[test_idx].min():
         raise ValueError("Утечка: в обучении есть годы не раньше прогнозируемого")
-    seq_tr, st_tr = _prepare(ds, train_idx, train_idx, cutoff)
-    seq_te, st_te = _prepare(ds, train_idx, test_idx, cutoff)
+    seq_tr, st_tr = _prepare(ds, train_idx, train_idx, cutoff, cfg.variables)
+    seq_te, st_te = _prepare(ds, train_idx, test_idx, cutoff, cfg.variables)
     r_mu, r_sd = ds.r[train_idx].mean(0), ds.r[train_idx].std(0) + 1e-8
     target = torch.tensor((ds.r[train_idx] - r_mu) / r_sd, dtype=torch.float32)
 
     preds = []
     for seed in seeds:
         torch.manual_seed(seed)
-        model = SeasonGRU(seq_tr.shape[2], st_tr.shape[1], target.shape[1], cfg)
+        arch = {"gru": SeasonGRU, "cnn": SeasonCNN}[cfg.arch]
+        model = arch(seq_tr.shape[2], st_tr.shape[1], target.shape[1], cfg)
         opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
         gen = torch.Generator().manual_seed(seed)
         model.train()

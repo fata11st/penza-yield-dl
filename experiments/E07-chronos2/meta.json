@@ -1,0 +1,62 @@
+{
+  "time_utc": "2026-10-29T21:35:09+00:00",
+  "commit": "b1558407669f3fc5efe822579d6814a00aee86a7",
+  "dirty": true,
+  "python": "3.12.3",
+  "packages": {
+    "torch": "2.14.1+cu130",
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "statsmodels": "0.15.0"
+  },
+  "dataset_sha256": "4b916c038d760c6d069078bd6b1a2d667c25547a7f4d7576eab98d522aad4b68",
+  "gpu": "NVIDIA GeForce RTX 5070 Ti",
+  "cuda": "13.0",
+  "experiment": "E07-chronos2",
+  "model_id": "amazon/chronos-2",
+  "covariates": [
+    "t_summer",
+    "p_summer",
+    "p_veget",
+    "t_may",
+    "swc_spring",
+    "pet_summer"
+  ],
+  "variants": {
+    "chronos2_uni": {
+      "covariates": false,
+      "cross_learning": false
+    },
+    "chronos2_cov": {
+      "covariates": true,
+      "cross_learning": false
+    },
+    "chronos2_cov_xl": {
+      "covariates": true,
+      "cross_learning": true
+    }
+  },
+  "chronos": "2.3.2",
+  "device": "cuda",
+  "limits": {
+    "cpu": {
+      "n_jobs": 8,
+      "threads_per_process": 2,
+      "nice": 10
+    },
+    "memory": {
+      "max_gb": 16
+    },
+    "gpu": {
+      "memory_fraction": 0.5
+    },
+    "ports": {
+      "jupyter": 8890,
+      "tensorboard": 6010,
+      "mlflow": 5010
+    }
+  },
+  "seconds": 11
+}

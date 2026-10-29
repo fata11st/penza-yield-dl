@@ -1,0 +1,124 @@
+{
+  "time_utc": "2026-10-29T20:49:00+00:00",
+  "commit": "35c6bbf04a2f9868c3652f098b8ade19f6ebbd39",
+  "dirty": false,
+  "python": "3.12.3",
+  "packages": {
+    "torch": "2.14.1+cu130",
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "statsmodels": "0.15.0"
+  },
+  "dataset_sha256": "4b916c038d760c6d069078bd6b1a2d667c25547a7f4d7576eab98d522aad4b68",
+  "gpu": "NVIDIA GeForce RTX 5070 Ti",
+  "cuda": "13.0",
+  "experiment": "E02-gru-inseason",
+  "tune_years": [
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018
+  ],
+  "eval_years": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "grid": {
+    "hidden": [
+      8,
+      16
+    ],
+    "weight_decay": [
+      0.001,
+      0.01,
+      0.1
+    ],
+    "epochs": [
+      100,
+      300
+    ]
+  },
+  "selected": {
+    "6": "h=16|wd=0.001|ep=300",
+    "7": "h=16|wd=0.001|ep=300",
+    "8": "h=16|wd=0.1|ep=300",
+    "9": "h=16|wd=0.01|ep=300"
+  },
+  "seeds_tune": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "seeds_final": [
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119
+  ],
+  "cutoffs": [
+    6,
+    7,
+    8,
+    9
+  ],
+  "baseline_selected": {
+    "p_grain_crops": "ridge",
+    "p_potato": "trend",
+    "p_sugar_beet": "ridge",
+    "p_sunflower": "ridge",
+    "p_vegetables": "trend"
+  },
+  "limits": {
+    "cpu": {
+      "n_jobs": 8,
+      "threads_per_process": 2,
+      "nice": 10
+    },
+    "memory": {
+      "max_gb": 16
+    },
+    "gpu": {
+      "memory_fraction": 0.5
+    },
+    "ports": {
+      "jupyter": 8890,
+      "tensorboard": 6010,
+      "mlflow": 5010
+    }
+  },
+  "seconds": 208
+}

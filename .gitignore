@@ -1,0 +1,18 @@
+# Окружение
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Результаты запусков: в git — только метрики (csv/json) и графики
+experiments/**/checkpoints/
+experiments/**/*.pt
+experiments/**/*.ckpt
+experiments/**/*.npy
+experiments/**/*.npz
+experiments/**/tb/
+
+# Секреты
+.env

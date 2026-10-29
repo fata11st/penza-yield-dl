@@ -63,3 +63,35 @@ def diebold_mariano(y_true, pred_a, pred_b, h: int = 1, loss: str = "ape") -> DM
     stat = float(dm * hln)
     p = float(2 * stats.t.sf(abs(stat), df=n - 1))
     return DMResult(stat, p, float(d_mean))
+
+
+def ape(y_true, y_pred) -> np.ndarray:
+    """Абсолютные процентные ошибки по каждому прогнозу, %."""
+    y_true, y_pred = np.asarray(y_true, float), np.asarray(y_pred, float)
+    return np.abs((y_true - y_pred) / y_true) * 100
+
+
+def bootstrap_mape_ci(ape_by_year: dict, n_boot: int = 2000, level: float = 0.95, seed: int = 0) -> tuple[float, float]:
+    """Бутстреп-интервал MAPE с переотбором ЛЕТ (блоками): ape_by_year — {год: массив APE всех прогнозов года}.
+
+    Переотбираются годы целиком, а не отдельные прогнозы: ошибки разных культур одного года связаны погодой.
+    """
+    rng = np.random.default_rng(seed)
+    years = list(ape_by_year)
+    stats_ = []
+    for _ in range(n_boot):
+        sample = rng.choice(years, size=len(years), replace=True)
+        stats_.append(np.mean(np.concatenate([np.atleast_1d(ape_by_year[y]) for y in sample])))
+    lo, hi = np.quantile(stats_, [(1 - level) / 2, 1 - (1 - level) / 2])
+    return float(lo), float(hi)
+
+
+def paired_dm(ape_a, ape_b) -> DMResult:
+    """Сравнение двух моделей по набору парных APE (например, 5 культур × 7 лет, решение D8).
+
+    Для объединённой выборки автоковариации между культурами не определены, поэтому используется DM с h = 1
+    (парный t-тест на разностях потерь с поправкой HLN).
+    """
+    a, b = np.asarray(ape_a, float), np.asarray(ape_b, float)
+    ones = np.ones_like(a)
+    return diebold_mariano(ones, ones - a / 100, ones - b / 100, h=1, loss="ape")

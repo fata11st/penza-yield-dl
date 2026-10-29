@@ -24,7 +24,7 @@ def collect(**extra) -> dict:
     meta = {
         "time_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "commit": _git("rev-parse", "HEAD"),
-        "dirty": bool(_git("status", "--porcelain")),
+        "dirty": bool(_git("status", "--porcelain", "--untracked-files=no")),
         "python": platform.python_version(),
         "packages": {},
         "dataset_sha256": data.sha256(data.DEFAULT_PATH),

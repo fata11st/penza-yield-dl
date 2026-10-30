@@ -28,7 +28,7 @@ pytest -q
 
 ```
 configs/resources.yaml   лимиты CPU/памяти/GPU и свободные порты (машина WSL общая)
-data/raw/                датасет (версия фиксируется SHA-256 в src/penza_yield/data.py)
+data/raw/                Пенза (SHA-256 в data.py); regions/ — 9 регионов (SHA-256 в panel.py)
 src/penza_yield/
   data.py                годовая таблица и помесячный тензор [год, месяц, переменная] с маской пропусков
   features.py            годовые признаки эталонов (лаги, тренд, погода сезона, NDVI)
@@ -37,6 +37,8 @@ src/penza_yield/
   seqrun.py              подбор и итоговые прогнозы моделей сезона
   tabular.py             MLP и TabPFN на годовых признаках (E05, E06)
   evaluation.py          единая сводка по D8: эталоны, якорь ma3, бутстреп, тест DM
+  panel.py               панель 10 регионов: очистка, агрономические признаки (D11)
+  panel_models.py        модели панели: эталоны, Ridge, LightGBM, MLP, GRU, Chronos-2
   meta.py                метаданные запуска (коммит, версии, GPU, хеш датасета)
   validation.py          расширяющееся окно, вложенная схема (подбор 2011–2018, оценка 2019–2025)
   metrics.py             MAPE, RMSE, MAE, тест Диболда–Мариано, бутстреп по годам
@@ -60,6 +62,10 @@ paper/                   текст статьи, рисунки, таблицы
 | E06 | TabPFN (нужен ключ) | `scripts/e06_tabpfn.py` |
 | E07 | Chronos-2 без дообучения | `scripts/e07_chronos.py` |
 | — | Всё E03–E07 подряд + сводка | `bash scripts/run_all.sh` → `experiments/SUMMARY/` |
+| P01 | Панель 10 регионов: эталоны, Ridge, LightGBM, MLP, GRU, Chronos-2 | `scripts/p01_panel_models.py --model …` |
+| P02 | Ансамбли: среднее, медиана, нейросети, 1/MAPE, стекинг, выбор лучшей | `scripts/p02_ensembles.py` |
+| P03 | Сводка панели: 9 новых регионов (основная), Пенза (вторичная) | `scripts/p03_summary.py` |
+| — | Всё P01–P03 подряд | `bash scripts/run_panel.sh` → `experiments/P03-summary/` |
 
 ## Правила
 

@@ -68,6 +68,16 @@ ENG_FEATURES = [
     "rad_jun_aug",                                     # солнечная радиация
     "ndvi_may", "ndvi_peak",                           # состояние посевов (с 2000 г.)
 ]
+# Группы агропризнаков для абляций (D13)
+FEATURE_GROUPS = {
+    "heat": ["t_may_jun", "t_jul_aug", "tmax_jul_aug"],
+    "precip": ["p_apr_may", "p_jun", "p_jul_aug"],
+    "water_balance": ["htc_may_aug", "wb_may_aug"],
+    "soil_moisture": ["swc_apr", "swc_deep_apr", "swc_jul"],
+    "winter": ["swe_winter", "frost_min"],
+    "radiation": ["rad_jun_aug"],
+    "ndvi": ["ndvi_may", "ndvi_peak"],
+}
 SEQ_VARIABLES = ["mean_temp", "max_temp", "rf_sum", "swc_7_28cm", "swc_28_100cm", "pet_mm", "solar_rad_jm2", "ndvi"]
 
 

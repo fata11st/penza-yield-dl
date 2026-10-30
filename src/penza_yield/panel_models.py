@@ -8,9 +8,19 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from penza_yield.panel import CROPS, ENG_FEATURES, SEQ_VARIABLES, Panel, region_anomalies
+from penza_yield.panel import CROPS, ENG_FEATURES, FEATURE_GROUPS, SEQ_VARIABLES, Panel, region_anomalies
 
 LAGS = ["lr1", "lr2"]
+
+
+def feature_columns(eng: list[str], cfg: dict) -> list[str]:
+    """Признаки по конфигурации: "lags" — только лаги; иначе лаги + агропризнаки без группы cfg["drop_group"]."""
+    if cfg.get("features", "lags_eng") == "lags":
+        return list(LAGS)
+    drop = set(FEATURE_GROUPS.get(cfg.get("drop_group", ""), []))
+    if "ndvi" in cfg.get("drop_group", ""):
+        drop |= {"ndvi_missing"}
+    return LAGS + [c for c in eng if c not in drop]
 
 
 # ---------------------------------------------------------------- эталоны
@@ -81,7 +91,7 @@ def predict_gbm(P: Panel, t: int, cfg: dict, seeds) -> pd.DataFrame:
         tr, te, eng = tabular(P, t, c)
         if te.empty:
             continue
-        cols = LAGS + eng
+        cols = feature_columns(eng, cfg)
         Xtr, Xte = tr[cols].copy(), te[cols].copy()
         regs = sorted(P.regions)
         Xtr["region_code"], Xte["region_code"] = tr.region.map(regs.index), te.region.map(regs.index)
@@ -120,7 +130,7 @@ def predict_mlp(P: Panel, t: int, cfg: dict, seeds) -> pd.DataFrame:
     from torch import nn
 
     tr, te, eng = tabular(P, t)
-    cols = LAGS + eng
+    cols = feature_columns(eng, cfg)
     crop_d = pd.get_dummies(pd.Categorical(tr.crop, categories=CROPS), dtype=float)
     reg_d = pd.get_dummies(pd.Categorical(tr.region, categories=P.regions), dtype=float)
     mu, sd = tr[cols].mean(), tr[cols].std().replace(0, 1)

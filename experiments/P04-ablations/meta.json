@@ -1,0 +1,108 @@
+{
+  "time_utc": "2026-10-30T02:00:29+00:00",
+  "commit": "fa2b3f231128821339b6b352db1c1b261a1468fd",
+  "dirty": false,
+  "python": "3.12.3",
+  "packages": {
+    "torch": "2.14.1+cu130",
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "statsmodels": "0.15.0"
+  },
+  "dataset_sha256": "4b916c038d760c6d069078bd6b1a2d667c25547a7f4d7576eab98d522aad4b68",
+  "gpu": "NVIDIA GeForce RTX 5070 Ti",
+  "cuda": "13.0",
+  "experiment": "P04-ablations",
+  "years": [
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "variants": [
+    "gbm_full",
+    "gbm_lags_only",
+    "gbm_minus_heat",
+    "gbm_minus_precip",
+    "gbm_minus_water_balance",
+    "gbm_minus_soil_moisture",
+    "gbm_minus_winter",
+    "gbm_minus_radiation",
+    "gbm_minus_ndvi",
+    "mlp_full",
+    "mlp_lags_only"
+  ],
+  "gbm_cfg": {
+    "num_leaves": 4,
+    "n_estimators": 100
+  },
+  "mlp_cfg": {
+    "hidden": 16,
+    "wd": 0.1,
+    "epochs": 200
+  },
+  "feature_groups": {
+    "heat": [
+      "t_may_jun",
+      "t_jul_aug",
+      "tmax_jul_aug"
+    ],
+    "precip": [
+      "p_apr_may",
+      "p_jun",
+      "p_jul_aug"
+    ],
+    "water_balance": [
+      "htc_may_aug",
+      "wb_may_aug"
+    ],
+    "soil_moisture": [
+      "swc_apr",
+      "swc_deep_apr",
+      "swc_jul"
+    ],
+    "winter": [
+      "swe_winter",
+      "frost_min"
+    ],
+    "radiation": [
+      "rad_jun_aug"
+    ],
+    "ndvi": [
+      "ndvi_may",
+      "ndvi_peak"
+    ]
+  },
+  "limits": {
+    "cpu": {
+      "n_jobs": 8,
+      "threads_per_process": 2,
+      "nice": 10
+    },
+    "memory": {
+      "max_gb": 16
+    },
+    "gpu": {
+      "memory_fraction": 0.5
+    },
+    "ports": {
+      "jupyter": 8890,
+      "tensorboard": 6010,
+      "mlflow": 5010
+    }
+  },
+  "seconds": 40
+}

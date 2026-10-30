@@ -72,6 +72,40 @@ printf "Host github-penza\n  HostName github.com\n  User git\n  IdentityFile ~/.
 ```
 Отпечаток GitHub (ED25519): `SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU`.
 
+## Доступ по SSH с Mac
+
+Через Tailscale, порт **2223** (22 — сервер toraX, 2222 — `ml`), только по ключу. Настроено 30.10.2026.
+
+Ubuntu `penza-dl` — конфигурация до установки пакета, иначе он займёт порт 22:
+```bash
+sudo mkdir -p /etc/ssh/sshd_config.d
+printf 'Port 2223\nPasswordAuthentication no\nKbdInteractiveAuthentication no\nPermitRootLogin no\nAllowUsers pnz\n' | sudo tee /etc/ssh/sshd_config.d/10-penza.conf
+sudo apt install -y openssh-server
+sudo systemctl daemon-reload && sudo systemctl restart ssh.socket && sudo systemctl enable ssh
+```
+Отпечаток ключа машины (ED25519): `SHA256:k07WyL/i7icJN+YM8+afCy7x7GTpXWrLqWWJFihTjmU`.
+В `~/.ssh/authorized_keys` — ключ Mac `macbook` (ed25519).
+
+PowerShell от администратора — брандмауэр (только домашняя сеть и Tailscale) и задача, которая держит машину запущенной:
+```powershell
+New-NetFirewallHyperVRule -Name "penza-ssh" -DisplayName "penza-dl SSH (WSL)" -Direction Inbound -VMCreatorId "{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}" -Protocol TCP -LocalPorts 2223 -RemoteAddresses 192.168.0.0/24,100.64.0.0/10 -Action Allow
+New-NetFirewallRule -Name "penza-ssh" -DisplayName "penza-dl SSH (WSL)" -Direction Inbound -Protocol TCP -LocalPort 2223 -RemoteAddress 192.168.0.0/24,100.64.0.0/10 -Action Allow -Profile Any
+$a = New-ScheduledTaskAction -Execute "conhost.exe" -Argument '--headless wsl.exe -d penza-dl -u root -- bash -lc "exec sleep infinity"'
+Register-ScheduledTask -TaskName "penza-dl" -Action $a -Trigger (New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME) -Settings (New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Seconds 0) -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1)) -Force
+```
+
+Mac, `~/.ssh/config`:
+```
+Host penza
+  HostName 100.115.96.127
+  Port 2223
+  User pnz
+  IdentityFile ~/.ssh/id_ed25519
+  UseKeychain yes
+  AddKeysToAgent yes
+```
+Перезапуск только этой машины — `wsl --terminate penza-dl`, затем `Start-ScheduledTask -TaskName penza-dl`.
+
 ## Ключи моделей
 
 TabPFN (E06): учётная запись Prior Labs, принятая лицензия модели, ключ API. Ключ хранится вне git:
@@ -92,6 +126,6 @@ bash scripts/run_all.sh          # E03–E07 и сводка; журналы —
 ## Соседи
 
 - `wsl --shutdown` — **запрещено**: остановит сервер toraX.
-- Порты сервера 22, 80, 443, 5432, 8000, 8080, 8443 и 2222 (`ml`) не занимать.
+- Порты сервера 22, 80, 443, 5432, 8000, 8080, 8443 и 2222 (`ml`) не занимать; 2223 — SSH этой машины.
 - Воркер toraX постоянно держит ~1,7 ГБ видеопамяти.
 - Источник сведений о соседях — `fata11st/toraX`, `docs/14_WORKSTATIONS.md`.

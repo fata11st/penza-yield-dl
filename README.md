@@ -65,6 +65,7 @@ paper/                   текст статьи, рисунки, таблицы
 | P01 | Панель 10 регионов: эталоны, Ridge, LightGBM, MLP, GRU, Chronos-2 | `scripts/p01_panel_models.py --model …` |
 | P02 | Ансамбли: среднее, медиана, нейросети, 1/MAPE, стекинг, выбор лучшей | `scripts/p02_ensembles.py` |
 | P03 | Сводка панели: 9 новых регионов (основная), Пенза (вторичная) | `scripts/p03_summary.py` |
+| P04 | Абляции: агропризнаки по группам, вклад каждой модели в ансамбль | `scripts/p04_ablations.py` |
 | — | Всё P01–P03 подряд | `bash scripts/run_panel.sh` → `experiments/P03-summary/` |
 
 ## Правила

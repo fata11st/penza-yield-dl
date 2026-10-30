@@ -1,0 +1,35 @@
+{
+  "time_utc": "2026-10-30T01:41:31+00:00",
+  "commit": "379420b8fb4421f6023fe021564e9dcf35d876db",
+  "dirty": false,
+  "python": "3.12.3",
+  "packages": {
+    "torch": "2.14.1+cu130",
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "statsmodels": "0.15.0"
+  },
+  "dataset_sha256": "4b916c038d760c6d069078bd6b1a2d667c25547a7f4d7576eab98d522aad4b68",
+  "gpu": "NVIDIA GeForce RTX 5070 Ti",
+  "cuda": "13.0",
+  "experiment": "P02-ensembles",
+  "components": [
+    "naive",
+    "trend",
+    "anchor",
+    "ridge_p",
+    "gbm_p",
+    "mlp_p",
+    "gru_p",
+    "chronos_uni_p",
+    "chronos_cov_p"
+  ],
+  "nn": [
+    "mlp_p",
+    "gru_p",
+    "chronos_cov_p"
+  ],
+  "first_year": 2011
+}

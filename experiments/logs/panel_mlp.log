@@ -1,0 +1,6 @@
+[mlp] подбор: 12 конфигураций × 8 лет…
+[mlp] подбор за 44 с; выбрано: hidden=16|wd=0.1|epochs=200 (MAPE подбора 17.49%)
+[mlp] готово за 52 с: 920 прогнозов → /home/pnz/projects/penza-yield-dl/experiments/P01-mlp
+       count
+model       
+mlp_p    326

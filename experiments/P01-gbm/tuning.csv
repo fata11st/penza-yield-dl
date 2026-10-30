@@ -1,0 +1,5 @@
+config,tune_mape_pooled
+num_leaves=4|n_estimators=100,17.727247136862665
+num_leaves=8|n_estimators=100,17.927659190762355
+num_leaves=4|n_estimators=300,18.229480656148173
+num_leaves=8|n_estimators=300,18.444168624529002

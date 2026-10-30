@@ -1,0 +1,6 @@
+[baselines] готово за 0 с: 2760 прогнозов → /home/pnz/projects/penza-yield-dl/experiments/P01-baselines
+        count
+model        
+anchor    326
+naive     326
+trend     326

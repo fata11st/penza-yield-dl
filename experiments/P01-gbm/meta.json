@@ -1,0 +1,102 @@
+{
+  "time_utc": "2026-10-30T01:38:24+00:00",
+  "commit": "379420b8fb4421f6023fe021564e9dcf35d876db",
+  "dirty": false,
+  "python": "3.12.3",
+  "packages": {
+    "torch": "2.14.1+cu130",
+    "numpy": "2.5.4",
+    "pandas": "3.1.0",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "statsmodels": "0.15.0"
+  },
+  "dataset_sha256": "4b916c038d760c6d069078bd6b1a2d667c25547a7f4d7576eab98d522aad4b68",
+  "gpu": "NVIDIA GeForce RTX 5070 Ti",
+  "cuda": "13.0",
+  "experiment": "P01-gbm",
+  "years": [
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "tune_years": [
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018
+  ],
+  "limits": {
+    "cpu": {
+      "n_jobs": 8,
+      "threads_per_process": 2,
+      "nice": 10
+    },
+    "memory": {
+      "max_gb": 16
+    },
+    "gpu": {
+      "memory_fraction": 0.5
+    },
+    "ports": {
+      "jupyter": 8890,
+      "tensorboard": 6010,
+      "mlflow": 5010
+    }
+  },
+  "seconds": 5,
+  "grid": [
+    {
+      "num_leaves": 4,
+      "n_estimators": 100
+    },
+    {
+      "num_leaves": 4,
+      "n_estimators": 300
+    },
+    {
+      "num_leaves": 8,
+      "n_estimators": 100
+    },
+    {
+      "num_leaves": 8,
+      "n_estimators": 300
+    }
+  ],
+  "selected": "num_leaves=4|n_estimators=100",
+  "seeds_tune": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "seeds_final": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ]
+}

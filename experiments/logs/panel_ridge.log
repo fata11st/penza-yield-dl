@@ -1,0 +1,6 @@
+[ridge] подбор: 10 конфигураций × 8 лет…
+[ridge] подбор за 3 с; выбрано: features=lags|alpha=1000 (MAPE подбора 17.14%)
+[ridge] готово за 3 с: 920 прогнозов → /home/pnz/projects/penza-yield-dl/experiments/P01-ridge
+         count
+model         
+ridge_p    326

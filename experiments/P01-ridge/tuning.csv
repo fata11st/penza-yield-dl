@@ -1,0 +1,11 @@
+config,tune_mape_pooled
+features=lags|alpha=1000,17.144633164299414
+features=lags_eng|alpha=1000,17.516871814428576
+features=lags|alpha=100,18.348161887985977
+features=lags_eng|alpha=100,19.06882778851413
+features=lags|alpha=10,19.556371876491074
+features=lags|alpha=1,19.797401335943036
+features=lags|alpha=0.1,19.823427848370127
+features=lags_eng|alpha=10,20.582897376524688
+features=lags_eng|alpha=1,21.184837904904057
+features=lags_eng|alpha=0.1,21.350288128384186

@@ -1,0 +1,6 @@
+[gru] подбор: 18 конфигураций × 8 лет…
+[gru] подбор за 93 с; выбрано: hidden=8|wd=0.1|epochs=100 (MAPE подбора 17.94%)
+[gru] готово за 106 с: 920 прогнозов → /home/pnz/projects/penza-yield-dl/experiments/P01-gru
+       count
+model       
+gru_p    326

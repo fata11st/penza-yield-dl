@@ -1,0 +1,8 @@
+Loading weights:   0%|          | 0/170 [00:00<?, ?it/s]Loading weights:  68%|██████▊   | 116/170 [00:00<00:00, 1159.41it/s]Loading weights: 100%|██████████| 170/170 [00:00<00:00, 1222.03it/s]
+[chronos] chronos_uni_p: готово (8 с), прогнозов якорем: 33
+[chronos] chronos_cov_p: готово (16 с), прогнозов якорем: 33
+[chronos] готово за 16 с: 1840 прогнозов → /home/pnz/projects/penza-yield-dl/experiments/P01-chronos
+               count
+model               
+chronos_cov_p    326
+chronos_uni_p    326

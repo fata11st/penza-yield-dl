@@ -1,0 +1,6 @@
+[gbm] подбор: 4 конфигураций × 8 лет…
+[gbm] подбор за 4 с; выбрано: num_leaves=4|n_estimators=100 (MAPE подбора 17.73%)
+[gbm] готово за 5 с: 920 прогнозов → /home/pnz/projects/penza-yield-dl/experiments/P01-gbm
+       count
+model       
+gbm_p    326
